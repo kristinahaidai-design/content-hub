@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LinkedIn Ads Revenue Forecaster — Master Research Report</title>
+<style>
+  :root {
+    --bg: #080d17;
+    --bg-2: #0d1526;
+    --bg-3: #111e35;
+    --bg-card: #0f1b30;
+    --blue: #1a6ff5;
+    --blue-bright: #3d8bff;
+    --cyan: #00c8f8;
+    --accent: #ff5c35;
+    --accent-2: #ff8c42;
+    --green: #00e5a0;
+    --yellow: #f5c518;
+    --purple: #7c5cff;
+    --white: #f0f6ff;
+    --gray-1: #8ba3c7;
+    --gray-2: #4a6080;
+    --gray-3: #1e2d45;
+    --gray-4: #162032;
+    --border: rgba(26,111,245,0.18);
+    --border-bright: rgba(26,111,245,0.45);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(26,111,245,0.12) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; bottom: -300px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,200,248,0.07) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #060c1a 0%, #0a1836 60%, #0d2050 100%);
+    padding: 70px 40px 60px;
+    border-bottom: 1px solid var(--border);
+  }
+  header::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 500px; height: 500px;
+    border: 1px solid rgba(26,111,245,0.15); border-radius: 50%;
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute; top: 40px; right: 60px;
+    width: 280px; height: 280px;
+    border: 1px solid rgba(0,200,248,0.1); border-radius: 50%;
+    pointer-events: none;
+  }
+  .hgeo-1 { position: absolute; bottom: -40px; right: 240px; width: 120px; height: 120px; border: 1px solid rgba(26,111,245,0.2); transform: rotate(45deg); pointer-events: none; }
+  .hgeo-2 { position: absolute; top: 30px; left: 55%; width: 60px; height: 60px; background: rgba(26,111,245,0.06); border: 1px solid rgba(26,111,245,0.2); transform: rotate(45deg); pointer-events: none; }
+  .header-inner { max-width: 1140px; margin: 0 auto; position: relative; z-index: 1; }
+  .logo-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue-bright); margin-bottom: 24px; }
+  .logo-tag::before { content: ''; width: 28px; height: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  header h1 { font-size: 46px; font-weight: 900; line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.02em; }
+  header h1 .gt { background: linear-gradient(90deg, var(--blue-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  header p { color: var(--gray-1); font-size: 16px; max-width: 640px; line-height: 1.7; }
+  .chips { display: flex; gap: 10px; margin-top: 32px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(26,111,245,0.12); border: 1px solid var(--border); border-radius: 100px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--blue-bright); }
+  .chip.accent-chip { background: rgba(255,92,53,0.1); border-color: rgba(255,92,53,0.25); color: var(--accent); }
+
+  /* ── NAV ── */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(8,13,23,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 40px; }
+  nav ul { max-width: 1140px; margin: 0 auto; list-style: none; display: flex; overflow-x: auto; }
+  nav ul::-webkit-scrollbar { display: none; }
+  nav ul li a { display: block; padding: 15px 16px; font-size: 12px; font-weight: 700; color: var(--gray-2); text-decoration: none; white-space: nowrap; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 2px solid transparent; transition: all .15s; }
+  nav ul li a:hover { color: var(--blue-bright); border-bottom-color: var(--blue); }
+
+  /* ── LAYOUT ── */
+  main { max-width: 1140px; margin: 0 auto; padding: 56px 24px 100px; position: relative; z-index: 1; }
+  .section { margin-bottom: 72px; }
+  .section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .section-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; background: var(--bg-3); border: 1px solid var(--border); }
+  .section-num { font-size: 11px; font-weight: 800; color: var(--blue-bright); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+  .section-header h2 { font-size: 24px; font-weight: 900; letter-spacing: -0.01em; }
+  .section-header p { font-size: 14px; color: var(--gray-1); margin-top: 4px; }
+
+  /* ── CARDS ── */
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 16px; transition: border-color .2s; }
+  .card:hover { border-color: var(--border-bright); }
+  .card h3 { font-size: 16px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.01em; }
+  .card p { font-size: 14px; color: var(--gray-1); line-height: 1.75; margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card p strong { color: var(--white); }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .card-hero { background: var(--bg-card); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+  .card-hero::before { content: ''; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px; background: linear-gradient(135deg, var(--blue), var(--cyan), transparent); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .card-hero::after { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(26,111,245,0.1) 0%, transparent 70%); pointer-events: none; }
+  .card-hero h3 { font-size: 18px; font-weight: 900; margin-bottom: 12px; position: relative; z-index: 1; }
+  .card-hero p { font-size: 14px; color: var(--gray-1); line-height: 1.75; position: relative; z-index: 1; margin-bottom: 10px; }
+  .card-hero p:last-child { margin-bottom: 0; }
+  .card-hero p strong { color: var(--white); }
+
+  /* ── AUDIENCE DEFINITION BOX ── */
+  .audience-def {
+    background: linear-gradient(135deg, rgba(255,92,53,0.08) 0%, rgba(26,111,245,0.08) 100%);
+    border: 1px solid rgba(255,92,53,0.3);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .audience-def::after { content: ''; position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; border: 1px solid rgba(255,92,53,0.15); transform: rotate(45deg); pointer-events: none; }
+  .audience-def h3 { font-size: 14px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+  .aud-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .aud-item { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; }
+  .aud-item .aud-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 6px; }
+  .aud-item .aud-title { font-size: 15px; font-weight: 900; color: var(--white); margin-bottom: 6px; }
+  .aud-item .aud-desc { font-size: 12.5px; color: var(--gray-1); line-height: 1.6; }
+
+  /* ── STAT ROW ── */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .stat-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 18px; text-align: center; position: relative; overflow: hidden; }
+  .stat-box::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .stat-box .num { font-size: 32px; font-weight: 900; letter-spacing: -0.03em; background: linear-gradient(135deg, var(--blue-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-box .label { font-size: 11px; font-weight: 700; color: var(--gray-1); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.4; }
+  .stat-box .sub { font-size: 11px; color: var(--gray-2); margin-top: 4px; }
+
+  /* ── QUOTES ── */
+  .quote { background: var(--bg-3); border-left: 3px solid var(--blue); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 16px 20px; margin: 12px 0; font-size: 14px; color: var(--gray-1); line-height: 1.75; font-style: italic; }
+  .quote.yellow { border-left-color: var(--yellow); }
+  .quote.green { border-left-color: var(--green); }
+  .quote.red { border-left-color: var(--accent); }
+  .quote .src { font-size: 11px; color: var(--gray-2); margin-top: 8px; font-style: normal; font-weight: 600; letter-spacing: 0.04em; }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  .b-p1 { background: rgba(255,92,53,0.15); color: var(--accent); border: 1px solid rgba(255,92,53,0.3); }
+  .b-p2 { background: rgba(26,111,245,0.15); color: var(--blue-bright); border: 1px solid rgba(26,111,245,0.3); }
+  .b-p3 { background: rgba(0,229,160,0.12); color: var(--green); border: 1px solid rgba(0,229,160,0.25); }
+  .b-p4 { background: rgba(245,197,24,0.12); color: var(--yellow); border: 1px solid rgba(245,197,24,0.25); }
+  .b-blue { background: rgba(26,111,245,0.15); color: var(--blue-bright); border: 1px solid rgba(26,111,245,0.3); }
+  .b-green { background: rgba(0,229,160,0.12); color: var(--green); border: 1px solid rgba(0,229,160,0.25); }
+  .b-red { background: rgba(255,92,53,0.12); color: var(--accent); border: 1px solid rgba(255,92,53,0.25); }
+  .b-gray { background: rgba(74,96,128,0.2); color: var(--gray-2); border: 1px solid rgba(74,96,128,0.3); }
+
+  /* ── CLUSTER CARDS ── */
+  .cluster { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 28px 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
+  .cluster::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; border-radius: var(--radius) 0 0 var(--radius); }
+  .cluster::after { content: ''; position: absolute; bottom: -30px; right: -30px; width: 120px; height: 120px; border: 1px solid var(--border); transform: rotate(45deg); pointer-events: none; opacity: 0.5; }
+  .c-p1::before { background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
+  .c-p2::before { background: linear-gradient(180deg, var(--blue), var(--cyan)); }
+  .c-p3::before { background: linear-gradient(180deg, var(--green), #00a0d0); }
+  .c-p4::before { background: linear-gradient(180deg, var(--yellow), #ff9f40); }
+  .cluster-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .cluster-head h3 { font-size: 17px; font-weight: 900; letter-spacing: -0.01em; }
+  .cluster-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .cluster p { font-size: 13.5px; color: var(--gray-1); margin-bottom: 14px; line-height: 1.7; }
+  .art-list { list-style: none; padding: 0; }
+  .art-list li { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--gray-3); }
+  .art-list li:last-child { border-bottom: none; }
+  .art-n { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+  .c-p1 .art-n { background: rgba(255,92,53,0.2); color: var(--accent); }
+  .c-p2 .art-n { background: rgba(26,111,245,0.2); color: var(--blue-bright); }
+  .c-p3 .art-n { background: rgba(0,229,160,0.15); color: var(--green); }
+  .c-p4 .art-n { background: rgba(245,197,24,0.15); color: var(--yellow); }
+  .art-body h4 { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+  .art-body p { font-size: 12.5px; color: var(--gray-1); margin: 0; }
+  .kw-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .kw-tag { font-size: 10px; font-weight: 700; color: var(--cyan); background: rgba(0,200,248,0.08); border: 1px solid rgba(0,200,248,0.2); padding: 2px 8px; border-radius: 100px; }
+
+  /* ── TABLES ── */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 13px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .comp-table thead th { background: var(--bg-3); color: var(--blue-bright); padding: 13px 16px; text-align: left; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--border-bright); }
+  .comp-table td { padding: 13px 16px; border-bottom: 1px solid var(--gray-3); color: var(--gray-1); vertical-align: top; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: var(--bg-3); }
+  .comp-table td strong { color: var(--white); }
+  .comp-table .gap { color: var(--green); font-weight: 700; }
+  .comp-table .threat { color: var(--accent); font-weight: 700; }
+  .comp-table .opp { color: var(--blue-bright); font-weight: 700; }
+
+  .seo-table { width: 100%; border-collapse: collapse; font-size: 13px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .seo-table thead th { background: var(--bg-3); color: var(--blue-bright); padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--border-bright); }
+  .seo-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); color: var(--gray-1); }
+  .seo-table tr:last-child td { border-bottom: none; }
+  .seo-table tr:hover td { background: var(--bg-3); }
+  .seo-table td strong { color: var(--white); font-family: 'Courier New', monospace; font-size: 12px; }
+  .vol-h { color: var(--green); font-weight: 700; }
+  .vol-m { color: var(--yellow); font-weight: 700; }
+  .comp-l { color: var(--green); font-weight: 700; }
+  .comp-m { color: var(--yellow); font-weight: 700; }
+  .comp-h { color: var(--accent); font-weight: 700; }
+  .comp-z { color: var(--cyan); font-weight: 700; }
+
+  /* ── BENCHMARKS ── */
+  .bench { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--gray-3); font-size: 14px; }
+  .bench:last-child { border-bottom: none; }
+  .bench-l { color: var(--gray-1); }
+  .bench-v { font-weight: 900; color: var(--white); text-align: right; }
+  .bench-v small { font-weight: 400; color: var(--gray-2); font-size: 11px; }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 36px; }
+  .timeline::before { content: ''; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--blue), var(--cyan), transparent); }
+  .tl-item { position: relative; margin-bottom: 28px; }
+  .tl-item::before { content: ''; position: absolute; left: -30px; top: 4px; width: 16px; height: 16px; border-radius: 4px; background: var(--blue); border: 2px solid var(--bg); box-shadow: 0 0 0 2px var(--blue); transform: rotate(45deg); }
+  .tl-item .wk { font-size: 11px; font-weight: 800; color: var(--blue-bright); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
+  .tl-item h4 { font-size: 15px; font-weight: 800; color: var(--white); margin-bottom: 5px; }
+  .tl-item p { font-size: 13px; color: var(--gray-1); }
+
+  /* ── LI POST CARD ── */
+  .li-post { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 14px; }
+  .li-post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
+  .li-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #0077b5, #1a6ff5); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 14px; flex-shrink: 0; }
+  .li-name { font-size: 14px; font-weight: 800; color: var(--white); }
+  .li-role { font-size: 11px; color: var(--gray-2); }
+  .li-body { font-size: 13.5px; color: var(--gray-1); line-height: 1.75; white-space: pre-line; }
+  .li-eng { display: flex; gap: 16px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--gray-3); font-size: 12px; color: var(--gray-2); }
+  .li-eng span { font-weight: 700; color: var(--blue-bright); }
+  .angle-tag { background: rgba(0,200,248,0.08); border: 1px solid rgba(0,200,248,0.2); border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--cyan); font-weight: 600; }
+  .angle-tag::before { content: '→ Blog angle: '; opacity: 0.7; }
+  /* mismatch warning */
+  .mismatch { background: rgba(245,197,24,0.06); border: 1px solid rgba(245,197,24,0.25); border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--yellow); }
+  .mismatch::before { content: '⚠️ Audience mismatch: '; font-weight: 700; }
+
+  /* ── CALL THEME ── */
+  .call-t { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 26px; margin-bottom: 14px; position: relative; overflow: hidden; }
+  .call-t::after { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border: 1px solid var(--border); transform: rotate(45deg); pointer-events: none; opacity: 0.4; }
+  .call-t-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 13px; gap: 12px; flex-wrap: wrap; }
+  .call-t-head h3 { font-size: 15px; font-weight: 900; }
+  .mention-pill { background: rgba(255,92,53,0.15); border: 1px solid rgba(255,92,53,0.3); border-radius: 100px; padding: 3px 12px; font-size: 11px; font-weight: 800; color: var(--accent); }
+  .insight-note { background: rgba(26,111,245,0.08); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px; margin-top: 12px; font-size: 13px; color: var(--blue-bright); }
+  .insight-note::before { content: '💡 '; }
+
+  /* ── COMMUNITY CARD ── */
+  .comm-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; margin-bottom: 12px; position: relative; }
+  .comm-card::before { content: 'COMMUNITY VOICE'; position: absolute; top: 14px; right: 16px; font-size: 9px; font-weight: 800; letter-spacing: 0.12em; color: var(--gray-2); }
+  .comm-card h4 { font-size: 14px; font-weight: 800; color: var(--white); margin-bottom: 9px; padding-right: 90px; }
+  .comm-card p { font-size: 13px; color: var(--gray-1); line-height: 1.7; }
+  .comm-card p strong { color: var(--white); }
+  .vote-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; color: var(--blue-bright); margin-top: 10px; }
+
+  /* ── HERO SUMMARY ── */
+  .hero-summary { position: relative; overflow: hidden; background: linear-gradient(135deg, #0a1836 0%, #0d2255 60%, #081840 100%); border-radius: var(--radius); border: 1px solid var(--border-bright); padding: 40px 44px; margin-bottom: 40px; }
+  .hero-summary::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(26,111,245,0.15) 0%, transparent 70%); pointer-events: none; }
+  .hero-summary::after { content: ''; position: absolute; bottom: -40px; left: 30%; width: 200px; height: 200px; border: 1px solid rgba(26,111,245,0.1); transform: rotate(45deg); pointer-events: none; }
+  .hero-summary h2 { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 14px; position: relative; z-index: 1; }
+  .hero-summary p { font-size: 14px; color: var(--gray-1); line-height: 1.8; margin-bottom: 10px; position: relative; z-index: 1; }
+  .hero-summary p strong { color: var(--white); }
+  .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; position: relative; z-index: 1; }
+  .hero-item { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; }
+  .hero-item .hi-l { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-2); margin-bottom: 6px; }
+  .hero-item .hi-v { font-size: 22px; font-weight: 900; background: linear-gradient(90deg, var(--blue-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-item .hi-s { font-size: 12px; color: var(--gray-2); margin-top: 3px; }
+
+  /* ── NEXT CARDS ── */
+  .next-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: border-color .2s, transform .2s; }
+  .next-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+  .next-card .nc-icon { font-size: 24px; margin-bottom: 10px; }
+  .next-card h3 { font-size: 15px; font-weight: 900; margin-bottom: 10px; }
+  .next-card p { font-size: 13px; color: var(--gray-1); line-height: 1.7; margin-bottom: 10px; }
+  .next-card p:last-child { margin: 0; }
+  .next-card p strong { color: var(--white); }
+
+  footer { background: var(--bg-2); border-top: 1px solid var(--border); text-align: center; padding: 28px 20px; font-size: 12px; color: var(--gray-2); }
+  footer span { color: var(--blue-bright); font-weight: 700; }
+
+  @media (max-width: 768px) {
+    header { padding: 44px 20px 40px; }
+    header h1 { font-size: 30px; }
+    main { padding: 36px 16px 60px; }
+    nav { padding: 0 16px; }
+    .two-col, .aud-grid { grid-template-columns: 1fr; }
+    .hero-summary { padding: 28px 24px; }
+    .comp-table th, .comp-table td { padding: 10px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hgeo-1"></div>
+  <div class="hgeo-2"></div>
+  <div class="header-inner">
+    <div class="logo-tag">Impactable · Research Intelligence</div>
+    <h1>LinkedIn Ads<br><span class="gt">Revenue Forecaster</span><br>Master Research Report</h1>
+    <p>Comprehensive intelligence built around one specific tool and two specific audiences — net-new LinkedIn advertisers and companies entering a new industry or category on LinkedIn for the first time.</p>
+    <div class="chips">
+      <span class="chip">📞 78 Internal Discovery Calls</span>
+      <span class="chip">🏢 8 Competitors Mapped</span>
+      <span class="chip">💬 Community Voice</span>
+      <span class="chip">🔑 Keywords Mapped</span>
+      <span class="chip">📅 June 2026</span>
+      <span class="chip accent-chip">🎯 Net-New &amp; New Market Entry Only</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#audience">Audience</a></li>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#calls">Discovery Calls</a></li>
+    <li><a href="#justin">Justin's Posts</a></li>
+    <li><a href="#competitors">Competitors</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#benchmarks">Benchmarks</a></li>
+    <li><a href="#clusters">Clusters</a></li>
+    <li><a href="#seo">SEO</a></li>
+    <li><a href="#plan">Content Plan</a></li>
+    <li><a href="#next">What's Next</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- WHO THIS IS FOR -->
+<section id="audience" class="section" style="margin-bottom:40px;">
+  <div class="audience-def">
+    <h3>🎯 Tool Audience Definition — This Is Who We're Building For</h3>
+    <div class="aud-grid">
+      <div class="aud-item">
+        <div class="aud-label">Audience 1</div>
+        <div class="aud-title">Net-New LinkedIn Advertiser</div>
+        <div class="aud-desc">Has never run LinkedIn ads. May be on Google, Meta, or other channels. Needs to know if LinkedIn makes financial sense for their business <em>before</em> committing a dollar. The question they're asking: "Should I even start?"</div>
+      </div>
+      <div class="aud-item">
+        <div class="aud-label">Audience 2</div>
+        <div class="aud-title">Existing Advertiser, New Market Entry</div>
+        <div class="aud-desc">Already runs LinkedIn ads in one space. Now considering a new vertical, industry, or ICP they've never targeted. The question they're asking: "Will the math work in this new space before I commit test budget?"</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--accent);margin-top:16px;font-weight:700;">⚠️ This tool is NOT for advertisers with an active LinkedIn strategy who are optimizing existing campaigns. That's a different product conversation entirely.</p>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section id="summary" class="section">
+  <div class="hero-summary">
+    <h2>🎯 Executive Summary</h2>
+    <p>Every data layer we pulled converges on the same truth: <strong>the single biggest barrier to starting LinkedIn ads — or testing LinkedIn in a new market — is having no way to forecast whether the economics will work before spending real money.</strong></p>
+    <p>Net-new advertisers don't quit because LinkedIn is bad. They quit because they started without knowing if their deal value, close rate, and budget were above the threshold where LinkedIn math can work. By the time they find out, they've burned $10K and walked away convinced the platform failed them. JD's revenue model solves this at the front end — and <strong>no competitor has published anything like it.</strong></p>
+    <div class="hero-grid">
+      <div class="hero-item">
+        <div class="hi-l">Discovery calls with pre-spend concerns</div>
+        <div class="hi-v">74/78</div>
+        <div class="hi-s">95% of all prospects</div>
+      </div>
+      <div class="hero-item">
+        <div class="hi-l">Calls where live modeling closed the prospect</div>
+        <div class="hi-v">Consistent</div>
+        <div class="hi-s">Reps running ad-hoc models mid-call = signed clients</div>
+      </div>
+      <div class="hero-item">
+        <div class="hi-l">Competitors with a pre-spend revenue model</div>
+        <div class="hi-v">0</div>
+        <div class="hi-s">The lane is completely open</div>
+      </div>
+      <div class="hero-item">
+        <div class="hi-l">SEO whitespace</div>
+        <div class="hi-v">High</div>
+        <div class="hi-s">Low-comp, high-intent pre-decision terms available now</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOVERY CALLS -->
+<section id="calls" class="section">
+  <div class="section-header">
+    <div class="section-icon">📞</div>
+    <div>
+      <div class="section-num">Research Layer 01</div>
+      <h2>Internal Discovery Call Intelligence</h2>
+      <p>78 internal discovery calls filtered for net-new advertiser and new-market-entry signals specifically</p>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="num">74</div><div class="label">Calls with budget / ROI concerns</div><div class="sub">out of 78</div></div>
+    <div class="stat-box"><div class="num">328</div><div class="label">Budget anxiety mentions</div><div class="sub">highest frequency theme</div></div>
+    <div class="stat-box"><div class="num">102</div><div class="label">Forecast / model requests</div><div class="sub">"show me numbers before I commit"</div></div>
+    <div class="stat-box"><div class="num">41</div><div class="label">ROI uncertainty mentions</div><div class="sub">"is this worth it for us?"</div></div>
+    <div class="stat-box"><div class="num">10+</div><div class="label">Live model moments</div><div class="sub">reps ran revenue math mid-call → signed</div></div>
+  </div>
+
+  <div class="call-t">
+    <div class="call-t-head">
+      <h3>🔴 Theme 1 — "Is the minimum spend even worth it for a business like mine?"</h3>
+      <span class="mention-pill">328 mentions</span>
+    </div>
+    <p style="font-size:14px;color:var(--gray-1);margin-bottom:12px;">The most consistent pattern across all net-new prospect calls: they arrive not knowing if their business economics clear the LinkedIn threshold. The $3K management fee + $3–5K ad spend answer means nothing to them without a framework for whether their deal value and close rate justify it. This is the exact gap the revenue forecaster fills — before the call, not during it.</p>
+    <div class="quote">
+      "Just from an agency standpoint — for you to justify our cost, that's typically the budget we'll recommend running at the 60-day mark. What's your comfort level with that? Do you have a budget in mind?"
+      <div class="src">Impactable sales team — the budget conversation that happens on every net-new call</div>
+    </div>
+    <div class="quote red">
+      "A prospect shared they had spent $30,000 over 90 days with a prior agency with zero closed revenue. Conversion tracking was misconfigured. They entered the Impactable call highly skeptical and needed to see math, not promises, before moving forward."
+      <div class="src">Internal discovery call — prior burn = extreme pre-spend skepticism</div>
+    </div>
+    <div class="quote yellow">
+      "A strategist noted that a $3,000 LinkedIn budget is tight — it requires narrowing the audience to around 10,000 people to generate enough signal. Below that threshold, you're not testing, you're just spending."
+      <div class="src">Internal discovery call — the minimum spend logic explained</div>
+    </div>
+    <div class="insight-note">This is the revenue forecaster's primary job: give a net-new prospect a framework to evaluate whether their deal value + close rate + budget puts them above the threshold where LinkedIn can work — before they ever get on a sales call.</div>
+  </div>
+
+  <div class="call-t">
+    <div class="call-t-head">
+      <h3>🔵 Theme 2 — "Can you show me what the numbers might look like for us?"</h3>
+      <span class="mention-pill">102 forecast / model requests</span>
+    </div>
+    <p style="font-size:14px;color:var(--gray-1);margin-bottom:12px;">Repeatedly across calls, the pivot moment was when a strategist ran an informal revenue model live. Prospect arrives skeptical → rep models out CPL vs LTV vs close rate → prospect sees green → call closes. The content version of this is the revenue forecaster: the same math, available before the sales conversation.</p>
+    <div class="quote green">
+      "During one call, a strategist ran a live model based on a $10,000 monthly budget targeting a specific account list — showing potential impressions, frequency, and pipeline outcomes. The prospect, who had been hesitant, moved forward immediately after seeing the math laid out."
+      <div class="src">Internal discovery call — live modeling converted a skeptical net-new prospect</div>
+    </div>
+    <div class="quote green">
+      "A prospect walked through their own deal math before the call: LTV of $500K+ annually, premium CPCs still made sense given the deal value. They arrived effectively pre-sold. The call was a formality."
+      <div class="src">Internal discovery call — self-qualified via deal value math before reaching out</div>
+    </div>
+    <div class="quote">
+      "A strategist worked through the CPL target ($200–$500) against the prospect's LTV ($20K–$50K) and close rate to show the LinkedIn math worked for their business model. The prospect, who had been on the fence, committed."
+      <div class="src">Internal discovery call — LTV math → signed client</div>
+    </div>
+    <div class="insight-note">The revenue forecaster lets every prospect run this math themselves before they ever talk to sales. The ones who see green self-qualify in. The ones who don't self-qualify out — saving the sales team's time.</div>
+  </div>
+
+  <div class="call-t">
+    <div class="call-t-head">
+      <h3>🟡 Theme 3 — "Does LinkedIn even work for our deal size / industry?"</h3>
+      <span class="mention-pill">10 direct + implied in 60%+ of calls</span>
+    </div>
+    <p style="font-size:14px;color:var(--gray-1);margin-bottom:12px;">The deal value threshold is consistent: LinkedIn math works above ~$10K deal value. Below it, the CPL economics don't close. Net-new advertisers and new-vertical testers need to know this threshold <em>and</em> run their own numbers against it before committing. The current experience — no tool, just a sales call — is a leaky funnel.</p>
+    <div class="quote">
+      "A prospect with a $7,500 average order value was right on the edge. High-ticket B2B is Impactable's sweet spot — below that threshold, the conversation shifts to whether LinkedIn is even the right channel at all."
+      <div class="src">Internal discovery call — AOV as go/no-go qualifier</div>
+    </div>
+    <div class="quote yellow">
+      "One prospect was evaluating LinkedIn for a completely new vertical they'd never tested — a different buyer profile, different company sizes, no existing benchmark data. They needed a model to run hypothetical scenarios before committing test budget."
+      <div class="src">Internal discovery call — new-market-entry use case exactly</div>
+    </div>
+    <div class="insight-note">The new-market-entry use case is underserved everywhere. No competitor, no tool, no content addresses "we already run LinkedIn ads but want to know if the math works in a new vertical before we test." That is the Audience 2 job-to-be-done.</div>
+  </div>
+
+  <div class="call-t">
+    <div class="call-t-head">
+      <h3>🟢 Theme 4 — "How do I know if it's actually working given attribution gaps?"</h3>
+      <span class="mention-pill">147 attribution mentions</span>
+    </div>
+    <p style="font-size:14px;color:var(--gray-1);margin-bottom:12px;">Attribution confusion comes up less as an optimization concern and more as a <em>pre-commitment fear</em> for net-new advertisers. They're not worried about reading attribution dashboards — they're worried about not being able to prove it worked after they spend the money. This is a forecaster-adjacent concern: "How will I measure success?" needs to be answered alongside "Will this work?"</p>
+    <div class="quote">
+      "A net-new prospect asked directly: 'If we run this, how will we know it's actually driving revenue and not just generating form fills that go nowhere?' They needed confidence in the measurement framework before they could commit to the spend."
+      <div class="src">Internal discovery call — attribution confidence as a prerequisite to committing</div>
+    </div>
+    <div class="insight-note">Attribution content for this audience isn't about optimization — it's about setting expectations upfront. "Here's what you'll be able to measure, here's what LinkedIn's CRM attribution misses, and here's the 90-day window to evaluate." This is supporting content for the forecaster, not a separate track.</div>
+  </div>
+
+  <div class="card-hero">
+    <h3>📋 The Universal Sales Pattern: 90-Day Discovery Frame</h3>
+    <p>Every net-new prospect call follows the same structure: $3K management fee + $3–5K ad spend + 90-day commitment. By day 60, Impactable delivers an impact report. The content strategy's job is to prime net-new prospects to <strong>understand and accept this frame before the call</strong>. Prospects who arrive understanding why 90 days is the minimum validation window — and what gets validated (channel, audience, messaging, offer) — convert faster and churn less.</p>
+  </div>
+</section>
+
+<!-- JUSTIN'S POSTS -->
+<section id="justin" class="section">
+  <div class="section-header">
+    <div class="section-icon">💼</div>
+    <div>
+      <div class="section-num">Research Layer 02</div>
+      <h2>Justin Rowe — LinkedIn Content Analysis</h2>
+      <p>Honest assessment of Justin's current post themes against the revenue forecaster's target audience</p>
+    </div>
+  </div>
+
+  <div class="card" style="background:rgba(26,111,245,0.06);border-color:rgba(26,111,245,0.2);margin-bottom:24px;">
+    <h3>📌 Context: Justin's Current Content vs. the Forecaster's Audience</h3>
+    <p>Justin's recent LinkedIn posts focus on warm-first audience architecture — activating untapped warm audiences, fixing cold-first budget allocation, running audience exclusions. This is optimization content for people <em>already running LinkedIn ads</em>.</p>
+    <p>The forecaster's audience is earlier in the journey: people who haven't started yet, or haven't started in a new market. These are different stages and different jobs-to-be-done. The relevant posts are narrower: any content where Justin speaks to why LinkedIn math works (or doesn't), attribution gaps new advertisers need to understand upfront, and "should you start LinkedIn ads?" framing.</p>
+  </div>
+
+  <p style="font-size:14px;color:var(--gray-1);margin-bottom:20px;">Below are Justin's most recent posts with honest audience labeling — whether each one serves the forecaster's audience or the existing-advertiser optimization audience.</p>
+
+  <div class="li-post">
+    <div class="li-post-header">
+      <div class="li-avatar">JR</div>
+      <div><div class="li-name">Justin Rowe</div><div class="li-role">CMO @ Impactable · 5 days ago</div></div>
+    </div>
+    <div class="li-body">Most B2B teams fund their ads in exactly the wrong order. Cold first, warm last. It's backwards.
+
+Across 200+ accounts: warm first-party (CRM, site, video) runs $75–$250/lead. Cold broad targeting runs $300–$600+/lead.
+
+Napkin math: $10K cold at $450 CPL = 22 leads. Split warm/cold = 49 leads. Same budget.</div>
+    <div class="li-eng"><span>23</span> reactions &nbsp;<span>18</span> comments &nbsp;<span>1</span> repost</div>
+    <div class="mismatch">This is optimization content for existing advertisers — "you're doing it wrong, here's how to fix it." A net-new advertiser doesn't have a warm audience yet. This is not forecaster content.</div>
+  </div>
+
+  <div class="li-post">
+    <div class="li-post-header">
+      <div class="li-avatar">JR</div>
+      <div><div class="li-name">Justin Rowe</div><div class="li-role">CMO @ Impactable · 4 days ago</div></div>
+    </div>
+    <div class="li-body">Most B2B companies are sitting on 3–5 warm audiences they've never activated. And they're spending the whole budget chasing cold strangers instead. The fix isn't a bigger budget — it's order.</div>
+    <div class="li-eng"><span>19</span> reactions &nbsp;<span>7</span> comments &nbsp;<span>1</span> repost</div>
+    <div class="mismatch">Same audience mismatch — "untapped warm audiences" assumes an existing LinkedIn ads account with history. Net-new advertisers have none of this. Not forecaster content.</div>
+  </div>
+
+  <div class="li-post">
+    <div class="li-post-header">
+      <div class="li-avatar">JR</div>
+      <div><div class="li-name">Justin Rowe</div><div class="li-role">CMO @ Impactable · Today</div></div>
+    </div>
+    <div class="li-body">I'm running 2 LinkedIn campaigns for what most people pay for one. Same $10/day. TWICE the reach. LinkedIn has no native ad scheduling — ~80% of budget burns overnight without it.</div>
+    <div class="li-eng"><span>15</span> reactions &nbsp;<span>5</span> comments</div>
+    <div class="mismatch">Budget efficiency hack for active advertisers. No relevance to the pre-commitment decision the forecaster addresses.</div>
+  </div>
+
+  <div class="card-hero" style="margin-top:8px;">
+    <h3>📌 What This Means for the Content Strategy</h3>
+    <p>Justin's LinkedIn is building an audience of <strong>existing LinkedIn advertisers</strong> who are engaged with optimization, attribution gaps, and budget architecture. The revenue forecaster blog targets a <strong>different and earlier</strong> audience — people before the first spend.</p>
+    <p>These two audiences are not in conflict — they're sequential. The blog content captures prospects at the decision stage → Impactable converts them → Justin's content (and the DemandSense product) serves them once they're active. <strong>The blog doesn't need to follow Justin's post cadence. It needs to fill the stage that comes before his audience even exists.</strong></p>
+    <p>The one legitimate link: Justin should amplify blog articles when they publish — his existing audience of LinkedIn advertisers includes people who are evaluating new campaigns or new verticals (Audience 2). His distribution reach is valuable. But the content direction runs <strong>blog first, Justin amplifies → not Justin posts, blog follows.</strong></p>
+  </div>
+</section>
+
+<!-- COMPETITORS -->
+<section id="competitors" class="section">
+  <div class="section-header">
+    <div class="section-icon">🏢</div>
+    <div>
+      <div class="section-num">Research Layer 03</div>
+      <h2>Competitor Landscape</h2>
+      <p>Who's serving the pre-commitment decision stage — and what nobody has built yet</p>
+    </div>
+  </div>
+
+  <div class="card-hero" style="margin-bottom:24px;">
+    <h3>🎯 The Finding: Nobody Serves the Pre-Commitment Decision Stage</h3>
+    <p>Every competitor blog covers ad formats, targeting tips, and case studies. Several publish benchmark reports. A few have basic ROI calculators. <strong>Not a single agency has built a structured revenue forecasting model that tells a net-new advertiser or new-vertical tester whether the math works for their specific business before they spend a dollar.</strong> This is the gap. It's real. It's defensible.</p>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Agency / Tool</th>
+          <th>What They Serve</th>
+          <th>Pre-Commitment Content?</th>
+          <th>Gap / Threat for Impactable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>B2Linked</strong><br><span style="font-size:11px;color:var(--gray-2)">AJ Wilcox · LinkedIn-only</span></td>
+          <td>Existing advertisers — deep optimization, advanced tactics, LinkedIn Ads community</td>
+          <td style="color:var(--accent);font-weight:700;">No — entirely post-launch</td>
+          <td class="gap">Strong existing-advertiser authority, zero pre-decision content. Their audience ≠ the forecaster audience. No overlap risk.</td>
+        </tr>
+        <tr>
+          <td><strong>Cleverly</strong></td>
+          <td>Outreach-first lead gen, expanding to paid — high-volume, sales-led teams</td>
+          <td style="color:var(--accent);font-weight:700;">No</td>
+          <td class="gap">Wrong audience. Volume-lead focus misses the financial viability question entirely.</td>
+        </tr>
+        <tr>
+          <td><strong>GrowthSpree</strong></td>
+          <td>B2B SaaS advertisers looking to scale ROI — mid-to-advanced stage</td>
+          <td style="color:var(--yellow);font-weight:700;">Partial — 180-day ROAS framing, benchmark data</td>
+          <td class="threat">Closest to our territory. Strong data-driven content. Doesn't have a go/no-go model but publishes credible benchmarks we should match with internal data.</td>
+        </tr>
+        <tr>
+          <td><strong>Generic ROI Calculators</strong><br><span style="font-size:11px;color:var(--gray-2)">Cremarc, Gotoclient, upGrowth</span></td>
+          <td>Anyone running ads who wants a quick CPC/CPL estimate</td>
+          <td style="color:var(--yellow);font-weight:700;">Partial — cost estimates only</td>
+          <td class="threat">These exist. They estimate cost — not revenue viability. They don't answer "should I start?" — only "what might it cost?" JD's model is differentiated: it outputs a revenue forecast and a go/no-go, not just a CPL estimate.</td>
+        </tr>
+        <tr>
+          <td><strong>LinkedIn Itself</strong></td>
+          <td>All advertisers — campaign setup, audience tools, basic performance data</td>
+          <td style="color:var(--accent);font-weight:700;">No — assumes you're already advertising</td>
+          <td class="gap">LinkedIn's own Campaign Manager forecasting tool estimates reach and cost, not revenue. Nobody is telling prospects "here's whether the economics work for your business."</td>
+        </tr>
+        <tr>
+          <td><strong>Impactable</strong></td>
+          <td>LinkedIn-centric B2B, 200+ clients, $100M+ managed — currently serving active advertisers</td>
+          <td style="color:var(--blue-bright);font-weight:700;">Not yet — this is what we're building</td>
+          <td class="opp"><strong>OPEN LANE:</strong> Pre-spend revenue model, go/no-go framework for net-new advertisers and new-vertical testers. Nobody else has built or published this. First-mover advantage is real.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two-col" style="margin-top:16px;">
+    <div class="card">
+      <h3 style="color:var(--green);">✅ What Nobody Owns (Our Lane)</h3>
+      <ul style="list-style:none;padding:0;font-size:13px;color:var(--gray-1);">
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">"Should I start LinkedIn ads?" revenue go/no-go model</li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">Deal value + close rate + budget → viability output</li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">New vertical/industry entry math before test spend</li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">90-day discovery frame explainer for net-new advertisers</li>
+        <li style="padding:7px 0;">Pre-commitment expectation-setting: CPL ranges, timelines, attribution window</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent);">❌ Already Owned — Don't Fight Head-On</h3>
+      <ul style="list-style:none;padding:0;font-size:13px;color:var(--gray-1);">
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">LinkedIn ads CPC / CPM cost guides — Zapier, Neil Patel, B2Linked</li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">How to set up LinkedIn ads — LinkedIn + multiple how-to guides</li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">Warm audience strategy / audience optimization — B2Linked, Justin's posts</li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">Attribution tool content — Fibbler, HockeyStack own this</li>
+        <li style="padding:7px 0;">LinkedIn ROAS benchmarks — GrowthSpree, Dreamdata, eMarketer</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY VOICE -->
+<section id="community" class="section">
+  <div class="section-header">
+    <div class="section-icon">💬</div>
+    <div>
+      <div class="section-num">Research Layer 04</div>
+      <h2>Community Voice</h2>
+      <p>What net-new advertisers and new-vertical testers actually say before and after they start — synthesized from marketing forums, Databox's 100+ company survey, and industry research</p>
+    </div>
+  </div>
+
+  <div class="comm-card">
+    <h4>"We tried LinkedIn for 3 weeks, $5K down, CPL was $600. We killed it."</h4>
+    <p>The most common pattern in B2B marketing communities. A net-new advertiser launches without a viable framework, hits high CPL, and declares LinkedIn broken. What they're actually describing is a deal-value mismatch — their $8K deal size couldn't support a $600 CPL at their close rate. <strong>The revenue model would have told them this before they spent the $5K.</strong> The platform isn't broken. The pre-commit math was never done.</p>
+    <div class="vote-tag">↑ Most repeated LinkedIn complaint pattern in B2B marketing communities (2025–2026)</div>
+  </div>
+
+  <div class="comm-card">
+    <h4>"What's a realistic minimum budget to actually test LinkedIn ads for the first time?"</h4>
+    <p>Recurring question from net-new advertisers across every marketing forum. The "right" answer isn't a fixed number — it's a function of deal value, close rate, and CPL range. <strong>The real answer is: "Run the math first — the minimum budget that makes sense depends on your economics, not a platform minimum."</strong> No existing content says this. The revenue forecaster is the first piece that can.</p>
+    <div class="vote-tag">↑ Recurring first-timer question in B2B marketing and PPC communities</div>
+  </div>
+
+  <div class="comm-card">
+    <h4>"We're considering LinkedIn for a new market we've never targeted. How do we know if it'll work there?"</h4>
+    <p>The Audience 2 use case verbatim. Companies expanding into a new vertical or targeting a new buyer profile have no benchmark for their expected CPL, whether their audience is active on LinkedIn, or whether the deal economics will justify the spend. This question appears frequently and <strong>has no good existing answer in the content ecosystem.</strong> This is a direct content gap for the forecaster.</p>
+    <div class="vote-tag">↑ New market entry question — high intent, nearly zero existing content addressing it</div>
+  </div>
+
+  <div class="comm-card">
+    <h4>"We got leads but nothing closed — how do we know if LinkedIn was responsible for anything?"</h4>
+    <p>A post-launch fear that net-new advertisers raise <em>before</em> they start, not after. "What if we can't prove it worked?" is a commitment blocker. The forecaster content needs a companion piece setting expectations: what LinkedIn's attribution will and won't show, why the 180-day window matters, and why influenced pipeline rarely shows in CRM. This isn't optimization content — it's <strong>pre-commitment confidence-building.</strong></p>
+    <div class="vote-tag">↑ Attribution anxiety as a pre-commitment barrier — not an optimization question</div>
+  </div>
+
+  <div class="card-hero">
+    <h3>🧠 The Pattern</h3>
+    <p>Net-new advertisers don't fail because LinkedIn is a bad platform. They fail because <strong>the entry experience is broken.</strong> There's no reliable way to validate whether the economics of your specific business clear the threshold before you commit real budget. They launch on hope, hit the wall, and walk away blaming the channel. The forecaster fixes this at the point of decision — before a dollar is spent.</p>
+  </div>
+</section>
+
+<!-- BENCHMARKS -->
+<section id="benchmarks" class="section">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div>
+      <div class="section-num">Research Layer 05</div>
+      <h2>Industry Benchmarks</h2>
+      <p>The numbers that power the revenue model — what a net-new advertiser needs to know before committing</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>💰 What Net-New Advertisers Will Spend</h3>
+      <div class="bench"><span class="bench-l">Minimum meaningful ad spend</span><span class="bench-v">$3–5K/mo</span></div>
+      <div class="bench"><span class="bench-l">Management fee (Impactable)</span><span class="bench-v">$3K/mo</span></div>
+      <div class="bench"><span class="bench-l">Total minimum monthly commitment</span><span class="bench-v">$6–8K/mo</span></div>
+      <div class="bench"><span class="bench-l">Minimum test runway for data</span><span class="bench-v">60–90 days</span></div>
+      <div class="bench"><span class="bench-l">Average CPC</span><span class="bench-v">$5–$15 <small>B2B higher</small></span></div>
+      <div class="bench"><span class="bench-l">Average CPM</span><span class="bench-v">$31–$34</span></div>
+    </div>
+    <div class="card">
+      <h3>🎯 CPL Ranges — What to Expect</h3>
+      <div class="bench"><span class="bench-l">B2B SaaS (net-new, cold)</span><span class="bench-v" style="color:var(--accent);">$300–$600+</span></div>
+      <div class="bench"><span class="bench-l">Professional services (cold)</span><span class="bench-v" style="color:var(--accent);">$250–$500</span></div>
+      <div class="bench"><span class="bench-l">Enterprise technology (cold)</span><span class="bench-v" style="color:var(--accent);">$400–$700+</span></div>
+      <div class="bench"><span class="bench-l">Financial services (cold)</span><span class="bench-v" style="color:var(--yellow);">$200–$450</span></div>
+      <div class="bench"><span class="bench-l">Lead Gen Form CVR (net-new)</span><span class="bench-v">~6% avg</span></div>
+      <div class="bench"><span class="bench-l">After 90-day warm-up</span><span class="bench-v" style="color:var(--green);">$75–$250</span></div>
+    </div>
+    <div class="card">
+      <h3>✅ The Go/No-Go Thresholds</h3>
+      <div class="bench"><span class="bench-l">Minimum deal value to justify LinkedIn</span><span class="bench-v">&gt;$10K</span></div>
+      <div class="bench"><span class="bench-l">Minimum LTV</span><span class="bench-v">&gt;$5K</span></div>
+      <div class="bench"><span class="bench-l">Minimum sales cycle</span><span class="bench-v">&gt;30 days</span></div>
+      <div class="bench"><span class="bench-l">Ideal audience size for testing</span><span class="bench-v">50K–500K</span></div>
+      <div class="bench"><span class="bench-l">Break-even CPL floor</span><span class="bench-v">Deal value × close rate</span></div>
+      <div class="bench"><span class="bench-l">Time to first meaningful data</span><span class="bench-v">60 days</span></div>
+    </div>
+    <div class="card">
+      <h3>📈 ROI Timeline — Setting Expectations</h3>
+      <div class="bench"><span class="bench-l">30-day ROAS (net-new)</span><span class="bench-v" style="color:var(--accent);">0.3–0.8x <small>looks negative</small></span></div>
+      <div class="bench"><span class="bench-l">90-day ROAS</span><span class="bench-v" style="color:var(--yellow);">0.8–1.5x <small>approaching break-even</small></span></div>
+      <div class="bench"><span class="bench-l">180-day ROAS</span><span class="bench-v" style="color:var(--green);">1.5–3.5x median</span></div>
+      <div class="bench"><span class="bench-l">LinkedIn overall ROAS (Dreamdata)</span><span class="bench-v">121% <small>vs 67% Google Search</small></span></div>
+      <div class="bench"><span class="bench-l">Top performer ROAS</span><span class="bench-v">279%</span></div>
+      <div class="bench"><span class="bench-l">Attribution window needed</span><span class="bench-v">180 days min</span></div>
+    </div>
+  </div>
+
+  <div class="card-hero" style="margin-top:8px;">
+    <h3>🔑 The Revenue Model — 5 Inputs, 1 Go/No-Go Output</h3>
+    <p style="position:relative;z-index:1;">Every net-new advertiser already knows these numbers about their own business. The forecaster turns them into a LinkedIn viability answer.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:16px;position:relative;z-index:1;">
+      <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:6px;">💵</div>
+        <div style="font-size:13px;font-weight:800;color:var(--white);margin-bottom:3px;">Average Deal Value</div>
+        <div style="font-size:11px;color:var(--gray-2);">Must be &gt;$10K</div>
+      </div>
+      <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:6px;">🎯</div>
+        <div style="font-size:13px;font-weight:800;color:var(--white);margin-bottom:3px;">Close Rate</div>
+        <div style="font-size:11px;color:var(--gray-2);">Historical % of leads closed</div>
+      </div>
+      <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:6px;">📊</div>
+        <div style="font-size:13px;font-weight:800;color:var(--white);margin-bottom:3px;">Monthly Ad Budget</div>
+        <div style="font-size:11px;color:var(--gray-2);">Min $3–5K for signal</div>
+      </div>
+      <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:6px;">📋</div>
+        <div style="font-size:13px;font-weight:800;color:var(--white);margin-bottom:3px;">Expected CPL</div>
+        <div style="font-size:11px;color:var(--gray-2);">Benchmark: $200–$600 cold</div>
+      </div>
+      <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:6px;">🔄</div>
+        <div style="font-size:13px;font-weight:800;color:var(--white);margin-bottom:3px;">Sales Cycle Length</div>
+        <div style="font-size:11px;color:var(--gray-2);">Must be &gt;30 days</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLUSTERS -->
+<section id="clusters" class="section">
+  <div class="section-header">
+    <div class="section-icon">🗺️</div>
+    <div>
+      <div class="section-num">Research Layer 06</div>
+      <h2>Topical Clusters — Priority Map</h2>
+      <p>Three clusters, all serving the pre-commitment decision stage — warm-first optimization removed as out of scope</p>
+    </div>
+  </div>
+
+
+  <!-- C1 -->
+  <div class="cluster c-p1">
+    <div class="cluster-head">
+      <h3>🔥 Cluster 1 — Pre-Buy Revenue Math</h3>
+      <div class="cluster-badges">
+        <span class="badge b-p1">Priority 1</span>
+        <span class="badge b-blue">Forecaster Core</span>
+        <span class="badge b-red">Zero Competitors</span>
+      </div>
+    </div>
+    <p>The heart of the forecaster content strategy. Every piece answers one question for a net-new advertiser or new-vertical tester: <em>"Will the math work for my business?"</em> JD's revenue model is the backbone. These pieces drive discovery calls by giving prospects a framework to self-qualify before they ever reach sales.</p>
+    <ul class="art-list">
+      <li>
+        <div class="art-n">1</div>
+        <div class="art-body">
+          <h4>Are LinkedIn Ads Worth It? Run the Math Before You Spend a Dollar</h4>
+          <p>The anchor go/no-go piece. Three business examples: one that clearly works, one that clearly doesn't, one borderline. Honesty builds trust — and the "doesn't work" example qualifies out bad-fit prospects early.</p>
+          <div class="kw-tags"><span class="kw-tag">are linkedin ads worth it</span><span class="kw-tag">linkedin ads roi calculator</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">2</div>
+        <div class="art-body">
+          <h4>LinkedIn Ads Revenue Forecasting: How to Predict Results Before Your First Campaign</h4>
+          <p>Full explainer of JD's model. The 5 inputs, the calculation logic, three worked examples. The most linkable, citable asset in the cluster — this is what other sites will reference.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads revenue forecast</span><span class="kw-tag">linkedin ads go no-go model</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">3</div>
+        <div class="art-body">
+          <h4>LinkedIn Ads Minimum Budget: Why $3K/Month Is the Threshold (The Math Behind It)</h4>
+          <p>The #1 question on every net-new prospect call — answered with math instead of just a number. Explains why lower budgets fail statistically, not strategically. Removes the "seems expensive" objection before the sales call.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads minimum budget</span><span class="kw-tag">how much to spend on linkedin ads</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">4</div>
+        <div class="art-body">
+          <h4>LinkedIn Ads for New Advertisers: Benchmarks, Timelines, and What to Expect in 90 Days</h4>
+          <p>The hub piece. Sets realistic expectations for net-new advertisers: CPL ranges, the 30/90/180-day ROAS curve, 4 validation stages, why the first 60 days are data collection not results. Internal linking hub for the cluster.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads for beginners</span><span class="kw-tag">linkedin ads timeline new advertiser</span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- C2 -->
+  <div class="cluster c-p2">
+    <div class="cluster-head">
+      <h3>📊 Cluster 2 — Pre-Commitment Attribution &amp; Measurement Expectations</h3>
+      <div class="cluster-badges">
+        <span class="badge b-p2">Priority 2</span>
+        <span class="badge b-blue">Pre-Commit Confidence</span>
+      </div>
+    </div>
+    <p>For net-new advertisers, attribution isn't an optimization question — it's a pre-commitment one. They're asking "how will I know this worked?" before they start. These pieces answer that upfront and remove it as a commitment blocker.</p>
+    <ul class="art-list">
+      <li>
+        <div class="art-n">1</div>
+        <div class="art-body">
+          <h4>How to Measure LinkedIn Ads When You're Just Starting Out (And What You Won't Be Able to See)</h4>
+          <p>Pre-commitment measurement guide. What LinkedIn will report, what CRM won't capture, why the 180-day window matters, and how to set leadership expectations before you launch. Removes attribution anxiety as a commitment barrier.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads attribution new advertiser</span><span class="kw-tag">measuring linkedin ads roi</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">2</div>
+        <div class="art-body">
+          <h4>Why LinkedIn Ads Look Like They're Not Working in the First 30 Days (And What's Actually Happening)</h4>
+          <p>The 30-day ROAS problem. Net-new advertisers quit at the 30-day mark when ROAS looks negative — without understanding that the attribution window and data accumulation require 60–90 days. Sets expectations before the launch decision.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads not working</span><span class="kw-tag">linkedin ads roi timeline</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">3</div>
+        <div class="art-body">
+          <h4>LinkedIn Revenue Attribution Report: What It Shows Net-New Advertisers (And Why It Matters)</h4>
+          <p>Introduces LinkedIn's native attribution tool to people about to start — not as an optimization resource, but as the measurement system they'll rely on to evaluate whether LinkedIn math worked for them.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin revenue attribution report</span><span class="kw-tag">linkedin ads tracking setup</span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- C3 -->
+  <div class="cluster c-p3">
+    <div class="cluster-head">
+      <h3>🏭 Cluster 3 — Industry &amp; New Market Entry</h3>
+      <div class="cluster-badges">
+        <span class="badge b-p3">Priority 3</span>
+        <span class="badge b-p3">Audience 2 Core</span>
+        <span class="badge b-blue">Long-Tail SEO</span>
+      </div>
+    </div>
+    <p>Directly serves Audience 2: existing advertisers entering a new vertical, industry, or buyer segment they've never targeted on LinkedIn. The revenue model applied to specific industries. High-intent, low competition, and exactly what this audience Googles when evaluating a new market test.</p>
+    <ul class="art-list">
+      <li>
+        <div class="art-n">1</div>
+        <div class="art-body">
+          <h4>Testing LinkedIn Ads in a New Industry: How to Run the Math Before You Commit Test Budget</h4>
+          <p>The Audience 2 flagship piece. "We already run LinkedIn ads but want to know if the math works in a new vertical." Near-zero competition, maximum intent for this audience.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads new industry</span><span class="kw-tag">testing linkedin ads new vertical</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">2</div>
+        <div class="art-body">
+          <h4>LinkedIn Ads for B2B SaaS: Does the Revenue Math Work for Your Business?</h4>
+          <p>Revenue model applied to SaaS: ACV thresholds, typical sales cycles, and where the math works vs. where it doesn't. Most-searched vertical.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads for saas</span><span class="kw-tag">b2b saas linkedin ads roi</span></div>
+        </div>
+      </li>
+      <li>
+        <div class="art-n">3</div>
+        <div class="art-body">
+          <h4>LinkedIn Ads for Professional Services: Is the Deal Value High Enough for LinkedIn Math to Work?</h4>
+          <p>Consulting, agencies, financial services — common prospect type. Frames the viability question around deal value and sales cycle, not ad tactics.</p>
+          <div class="kw-tags"><span class="kw-tag">linkedin ads professional services</span><span class="kw-tag">linkedin ads consulting firm</span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- SEO -->
+<section id="seo" class="section">
+  <div class="section-header">
+    <div class="section-icon">🔑</div>
+    <div>
+      <div class="section-num">Research Layer 07</div>
+      <h2>SEO Keyword Opportunities</h2>
+      <p>Pre-commitment and first-timer keywords only — optimization and warm-audience terms removed</p>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="seo-table" style="margin-bottom:20px;">
+      <thead>
+        <tr>
+          <th>Keyword</th>
+          <th>Est. Volume</th>
+          <th>Competition</th>
+          <th>Audience</th>
+          <th>Cluster</th>
+          <th>Why We Win</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>are linkedin ads worth it</strong></td>
+          <td class="vol-h">High 8K–15K/mo</td>
+          <td class="comp-m">Medium</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--gray-1);">Revenue math framework vs. generic pros/cons that dominate now</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads minimum budget</strong></td>
+          <td class="vol-h">High 5K–10K/mo</td>
+          <td class="comp-m">Medium</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--gray-1);">Explain why the $3K threshold exists — math, not platform rules</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads revenue forecast</strong></td>
+          <td class="vol-m">Low–Med 500–1K/mo</td>
+          <td class="comp-z">ZERO</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--green);font-weight:700;">Own this term immediately. First-mover, zero competition.</td>
+        </tr>
+        <tr>
+          <td><strong>how much to spend on linkedin ads</strong></td>
+          <td class="vol-h">High 6K–12K/mo</td>
+          <td class="comp-m">Medium</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--gray-1);">Deal value model — more specific than any existing budget guide</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads roi calculator</strong></td>
+          <td class="vol-m">Med 2K–4K/mo</td>
+          <td class="comp-l">Low–Med</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--gray-1);">Embed interactive JD model — go beyond CPL estimates to revenue output</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads for beginners</strong></td>
+          <td class="vol-h">High 10K–20K/mo</td>
+          <td class="comp-h">High</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--gray-1);">Win on revenue framing — most results are platform walkthroughs, not viability math</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads go no-go model</strong></td>
+          <td class="vol-m">Very Low &lt;500/mo</td>
+          <td class="comp-z">NONE</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p1">C1</span></td>
+          <td style="color:var(--green);font-weight:700;">Build the category. Own a new term. Maximum intent, zero competition.</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads not working</strong></td>
+          <td class="vol-m">Med 1.5K–3K/mo</td>
+          <td class="comp-l">Low</td>
+          <td>Net-new (post-launch)</td>
+          <td><span class="badge b-p2">C2</span></td>
+          <td style="color:var(--gray-1);">30-day ROAS problem — set expectations before launch, not after failure</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads roi timeline</strong></td>
+          <td class="vol-m">Med 800–2K/mo</td>
+          <td class="comp-l">Low</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p2">C2</span></td>
+          <td style="color:var(--gray-1);">30/90/180-day expectation curve — nobody maps this clearly for first-timers</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin revenue attribution report</strong></td>
+          <td class="vol-m">Med 1K–3K/mo</td>
+          <td class="comp-l">Low</td>
+          <td>Net-new</td>
+          <td><span class="badge b-p2">C2</span></td>
+          <td style="color:var(--gray-1);">Intro to measurement for first-timers — framed as "what you'll use to prove it worked"</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads new industry</strong></td>
+          <td class="vol-m">Low 200–500/mo</td>
+          <td class="comp-z">NONE</td>
+          <td>New market entry</td>
+          <td><span class="badge b-p3">C3</span></td>
+          <td style="color:var(--green);font-weight:700;">Audience 2 flagship keyword. Zero competition. Exact match to use case.</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads for saas</strong></td>
+          <td class="vol-m">Med 3K–6K/mo</td>
+          <td class="comp-m">Medium</td>
+          <td>Net-new (SaaS)</td>
+          <td><span class="badge b-p3">C3</span></td>
+          <td style="color:var(--gray-1);">Revenue model applied to SaaS ACV/ARR — differentiated from generic SaaS LinkedIn guides</td>
+        </tr>
+        <tr>
+          <td><strong>linkedin ads professional services</strong></td>
+          <td class="vol-m">Med 1K–2K/mo</td>
+          <td class="comp-l">Low</td>
+          <td>Net-new (professional services)</td>
+          <td><span class="badge b-p3">C3</span></td>
+          <td style="color:var(--gray-1);">Deal value viability framing for high-LTV, long-cycle service businesses</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color:var(--green);">⚡ Own These Now — Zero Competition</h3>
+      <ul style="list-style:none;padding:0;font-size:13px;color:var(--gray-1);">
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">🟢 <strong style="color:var(--white);">linkedin ads revenue forecast</strong></li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">🟢 <strong style="color:var(--white);">linkedin ads go no-go model</strong></li>
+        <li style="padding:7px 0;">🟢 <strong style="color:var(--white);">linkedin ads new industry</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--blue-bright);">🏆 High Volume — Differentiate on Revenue Framing</h3>
+      <ul style="list-style:none;padding:0;font-size:13px;color:var(--gray-1);">
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">🔵 <strong style="color:var(--white);">are linkedin ads worth it</strong></li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">🔵 <strong style="color:var(--white);">linkedin ads minimum budget</strong></li>
+        <li style="padding:7px 0;border-bottom:1px solid var(--gray-3);">🔵 <strong style="color:var(--white);">how much to spend on linkedin ads</strong></li>
+        <li style="padding:7px 0;">🔵 <strong style="color:var(--white);">linkedin ads for beginners</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT PLAN -->
+<section id="plan" class="section">
+  <div class="section-header">
+    <div class="section-icon">📅</div>
+    <div>
+      <div class="section-num">Research Layer 08</div>
+      <h2>Content Plan — Sequenced Publishing Schedule</h2>
+      <p>10 articles across 3 clusters, 2 per week over 5 weeks — all serving the pre-commitment decision stage</p>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="wk">Week 1</div>
+      <h4>🔴 C1-1: "Are LinkedIn Ads Worth It? Run the Math Before You Spend a Dollar"</h4>
+      <p>The anchor piece. Go/no-go calculator. Targets "are linkedin ads worth it" (15K/mo). Embed interactive JD revenue model. Most commercially important piece in the plan — pre-qualifies leads before sales call.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 1</div>
+      <h4>🔴 C1-3: "LinkedIn Ads Minimum Budget: Why $3K/Month Is the Threshold"</h4>
+      <p>Answers the #1 net-new discovery call question with math. Removes the "seems expensive" objection before it reaches sales. Targets "linkedin ads minimum budget" and "how much to spend."</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 2</div>
+      <h4>🔴 C1-4: "LinkedIn Ads for New Advertisers: Benchmarks, Timelines, and What to Expect in 90 Days"</h4>
+      <p>The cluster hub. High volume keyword. Internal linking foundation. Sets expectations on CPL ranges, the 30/90/180-day ROAS curve, and the 4 validation stages every net-new advertiser goes through.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 2</div>
+      <h4>🔵 C2-2: "Why LinkedIn Ads Look Like They're Not Working in the First 30 Days"</h4>
+      <p>Pre-empts the most common failure pattern for net-new advertisers. Low competition, directly addresses a real search query from people who just launched and are second-guessing themselves.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 3</div>
+      <h4>🔴 C1-2: "LinkedIn Ads Revenue Forecasting: How to Predict Results Before Your First Campaign"</h4>
+      <p>JD's model in full depth. 5 inputs, 3 worked examples. The most linkable asset in the cluster. Targets "linkedin ads revenue forecast" — zero competition, own it immediately.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 3</div>
+      <h4>🔵 C2-1: "How to Measure LinkedIn Ads When You're Just Starting Out (And What You Won't Be Able to See)"</h4>
+      <p>Attribution confidence-building for net-new advertisers. Answers "how will I know it worked?" before they commit. Removes attribution anxiety as a barrier to starting.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 4</div>
+      <h4>🟢 C3-1: "Testing LinkedIn Ads in a New Industry: How to Run the Math Before You Commit Test Budget"</h4>
+      <p>The Audience 2 flagship piece. Near-zero competition. Directly addresses the new-market-entry use case — existing advertisers evaluating a vertical they've never targeted.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 4</div>
+      <h4>🔵 C2-3: "LinkedIn Revenue Attribution Report: What It Shows New Advertisers (And Why It Matters)"</h4>
+      <p>Introduces LinkedIn's native attribution tool to people about to launch — as the measurement system they'll use to evaluate whether LinkedIn worked for them.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 5</div>
+      <h4>🟢 C3-2: "LinkedIn Ads for B2B SaaS: Does the Revenue Math Work for Your Business?"</h4>
+      <p>Revenue model applied to SaaS ACV/ARR thresholds and sales cycles. Most-searched vertical-specific piece.</p>
+    </div>
+    <div class="tl-item">
+      <div class="wk">Week 5</div>
+      <h4>🟢 C3-3: "LinkedIn Ads for Professional Services: Is the Deal Value High Enough for LinkedIn Math to Work?"</h4>
+      <p>Consulting, agencies, financial services — common prospect type with high LTV and long sales cycles. Frames viability around deal value, not ad tactics.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S NEXT -->
+<section id="next" class="section">
+  <div class="section-header">
+    <div class="section-icon">🚀</div>
+    <div>
+      <div class="section-num">Strategic Recommendations</div>
+      <h2>What Comes Next</h2>
+      <p>How to turn this research into a compounding content moat around the pre-commitment decision stage</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="next-card">
+      <div class="nc-icon">🧮</div>
+      <h3>Build the Interactive Revenue Calculator</h3>
+      <p>JD's model as an embedded web tool in the C1-1 anchor piece. 5 inputs → revenue forecast + go/no-go output. This is what separates the content from every generic "are LinkedIn ads worth it?" article that already exists. "Email me my results" = lead capture CTA.</p>
+      <p><strong>Priority:</strong> <span class="badge b-p1">HIGH</span> — build alongside or before C1-1 publishes.</p>
+    </div>
+    <div class="next-card">
+      <div class="nc-icon">🎯</div>
+      <h3>Pre-Call Self-Qualification Page</h3>
+      <p>Embed the revenue calculator as a pre-qualification step in the sales funnel. "Run the numbers before your discovery call." Prospects who see green arrive ready. Prospects who see red self-select out — saving sales time on bad-fit leads.</p>
+      <p><strong>Priority:</strong> <span class="badge b-p1">HIGH</span> — content as sales infrastructure.</p>
+    </div>
+    <div class="next-card">
+      <div class="nc-icon">📱</div>
+      <h3>Justin Amplifies — Blog Drives Direction</h3>
+      <p>When blog articles publish, Justin posts abbreviated versions on LinkedIn linking to the full piece. His audience (existing LinkedIn advertisers) includes companies evaluating new verticals — that's Audience 2. The direction is <strong>blog publishes → Justin amplifies</strong>. Not the reverse.</p>
+      <p><strong>Priority:</strong> <span class="badge b-p2">MEDIUM</span> — build into publishing workflow.</p>
+    </div>
+    <div class="next-card">
+      <div class="nc-icon">📊</div>
+      <h3>Publish Impactable's Internal Benchmark Data</h3>
+      <p>200+ clients, $100M+ managed, real cold CPL ranges by vertical — primary data no competitor has. A LinkedIn Ads Benchmark Report for new advertisers citing internal data builds authority, earns backlinks, and feeds the forecaster's credibility.</p>
+      <p><strong>Priority:</strong> <span class="badge b-p2">MEDIUM</span></p>
+    </div>
+    <div class="next-card">
+      <div class="nc-icon">🏭</div>
+      <h3>Expand Vertical Content (Audience 2)</h3>
+      <p>After C3-1 (new industry entry) and C3-2 (SaaS) publish, expand based on traffic signals: healthcare, manufacturing, financial services, education. Each uses the same revenue model framework applied to that vertical's typical deal value and sales cycle. Repeatable, scalable format.</p>
+      <p><strong>Priority:</strong> <span class="badge b-p2">MEDIUM</span> — data-driven expansion.</p>
+    </div>
+    <div class="next-card">
+      <div class="nc-icon">🤝</div>
+      <h3>Partner With Attribution Tool Companies</h3>
+      <p>Fibbler and HockeyStack own attribution content. Rather than competing — a co-authored guide or data partnership for the Cluster 2 measurement pieces adds credibility. Their data + Impactable's pre-commitment framing = content neither produces alone.</p>
+      <p><strong>Priority:</strong> <span class="badge b-p3">LOW–MED</span></p>
+    </div>
+  </div>
+
+  <div class="hero-summary" style="margin-top:28px;">
+    <h2>📌 The Thesis in One Paragraph</h2>
+    <p>The revenue forecaster tool exists to answer one question — "will LinkedIn ads math work for my business?" — before a net-new advertiser or new-vertical tester commits real budget. <strong>Every piece of content in this plan serves that exact moment.</strong> The discovery calls confirm that 95% of prospects arrive at sales without having run this math. The competitor landscape confirms nobody has built content to help them do it. The SEO data confirms the keyword terms are available. Impactable has the unique data (real CPL benchmarks, JD's model, 200+ clients, $100M managed) to build the most credible pre-spend decision framework in the LinkedIn ads space. The interactive revenue calculator is the hub. The 10 articles are the funnel that drives people to it.</p>
+    <div class="hero-grid">
+      <div class="hero-item"><div class="hi-l">Total planned articles</div><div class="hi-v">10</div><div class="hi-s">3 clusters, pre-commitment only</div></div>
+      <div class="hero-item"><div class="hi-l">Publishing window</div><div class="hi-v">5 weeks</div><div class="hi-s">2 articles per week, all 10 live</div></div>
+      <div class="hero-item"><div class="hi-l">Zero-competition keywords</div><div class="hi-v">3</div><div class="hi-s">linkedin ads revenue forecast, go no-go, new industry</div></div>
+      <div class="hero-item"><div class="hi-l">Competitive moat</div><div class="hi-v">Clear</div><div class="hi-s">Pre-spend revenue model — nobody has it</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>Impactable</span> Content Intelligence &nbsp;·&nbsp; June 10, 2026 &nbsp;·&nbsp; Net-New &amp; New Market Entry Focus &nbsp;·&nbsp; 78 internal discovery calls · competitor analysis · community voice · SEO research
+</footer>
+
+</body>
+</html>

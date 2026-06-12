@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impactable Live Events — Two-Track Registration Flow</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f4f6fb;
+      color: #1a1a2e;
+      padding: 40px 24px;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .logo-badge {
+      display: inline-block;
+      background: #0a66c2;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f1c36;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 14px;
+      color: #5a6478;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── STAT BAR ── */
+    .stat-bar {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-bottom: 44px;
+    }
+    .stat-item { text-align: center; }
+    .stat-item .num {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0a66c2;
+      line-height: 1;
+    }
+    .stat-item .lbl {
+      font-size: 11px;
+      color: #8a93a8;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+    .sdiv {
+      width: 1px; height: 40px;
+      background: #dde1ea;
+      align-self: center;
+    }
+
+    /* ── TWO TRACK HEADER ── */
+    .track-header-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto 6px;
+    }
+    .track-label {
+      border-radius: 12px 12px 0 0;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .track-a { background: #e8f0fb; color: #0a4a99; }
+    .track-b { background: #e6f9f0; color: #006b40; }
+    .track-label .track-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .tag-a { background: #0a66c2; color: #fff; }
+    .tag-b { background: #00a86b; color: #fff; }
+
+    /* ── MAIN TWO-COLUMN LAYOUT ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .col { display: flex; flex-direction: column; gap: 6px; }
+
+    /* ── STEP CARD ── */
+    .step {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1.5px solid #e4e8f3;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .step.blue  { border-color: #0a66c2; }
+    .step.green { border-color: #00a86b; }
+    .step.amber { border-color: #f5a623; }
+    .step.shared { border-color: #7b2fbe; background: #fdf8ff; }
+
+    .step-num {
+      position: absolute;
+      top: -10px; left: 18px;
+      font-size: 10px; font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .num-a { background: #0a66c2; color: #fff; }
+    .num-b { background: #00a86b; color: #fff; }
+    .num-shared { background: #7b2fbe; color: #fff; }
+
+    .step-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .step-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .ic-blue  { background: #e8f0fb; }
+    .ic-green { background: #e6f9f0; }
+    .ic-amber { background: #fff4e0; }
+    .ic-purple{ background: #f3ebff; }
+    .ic-gray  { background: #f0f2f7; }
+
+    .step-title {
+      font-size: 14px; font-weight: 700;
+      color: #0f1c36; margin-bottom: 3px;
+    }
+    .step-desc {
+      font-size: 12.5px; color: #6b7589; line-height: 1.55;
+    }
+    .step-desc strong { color: #1a1a2e; }
+
+    /* ── MINI TACTICS ── */
+    .tactics {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .tactic {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: #f7f9fd;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    .tactic .t-icon { font-size: 14px; flex-shrink: 0; line-height: 1.4; }
+    .tactic .t-text { color: #3a4462; line-height: 1.5; }
+    .tactic .t-text strong { color: #0f1c36; }
+
+    /* ── ARROW ── */
+    .arrow-down {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 2px 0;
+    }
+    .arrow-line {
+      width: 2px; height: 20px;
+      background: #c5cede;
+    }
+    .arrow-tip {
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid #c5cede;
+    }
+
+    /* ── MERGE BANNER ── */
+    .merge-banner {
+      max-width: 1000px;
+      margin: 8px auto 6px;
+      background: #fdf8ff;
+      border: 1.5px solid #7b2fbe;
+      border-radius: 12px;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .merge-icon {
+      font-size: 24px; flex-shrink: 0;
+    }
+    .merge-text .merge-title {
+      font-size: 14px; font-weight: 700;
+      color: #4a1a8a; margin-bottom: 3px;
+    }
+    .merge-text .merge-sub {
+      font-size: 12.5px; color: #6b5a80; line-height: 1.5;
+    }
+
+    /* ── SURVEY SECTION ── */
+    .survey-section {
+      max-width: 1000px;
+      margin: 0 auto 6px;
+    }
+    .survey-card {
+      background: #fff;
+      border: 1.5px solid #7b2fbe;
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 2px 12px rgba(123,47,190,0.08);
+      position: relative;
+    }
+    .survey-badge {
+      position: absolute;
+      top: -11px; left: 24px;
+      background: #7b2fbe; color: #fff;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .survey-head {
+      display: flex; gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .q-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .q-item {
+      background: #f8f6ff;
+      border-radius: 10px;
+      padding: 13px 14px;
+      border: 1px solid #e4d8f7;
+    }
+    .q-num {
+      font-size: 9.5px; font-weight: 800;
+      color: #7b2fbe; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 5px;
+    }
+    .q-text {
+      font-size: 12.5px; font-weight: 600;
+      color: #1a1a2e; margin-bottom: 6px; line-height: 1.4;
+    }
+    .q-opts {
+      font-size: 11.5px; color: #6b7589; line-height: 1.7;
+    }
+    .q-opts .hot { color: #0a66c2; font-weight: 600; }
+    .q-tag {
+      display: inline-block;
+      font-size: 9.5px; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px;
+      margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .tq { background: #e8f0fb; color: #0a66c2; }
+    .ts { background: #f0e8fb; color: #7b2fbe; }
+    .ti { background: #e6f9f0; color: #007a4d; }
+    .tc { background: #fff0e0; color: #c07000; }
+
+    /* ── ROUTING ── */
+    .routing-section {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #8a93a8; margin-bottom: 10px;
+      padding-left: 2px;
+    }
+    .routes-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+    .route {
+      border-radius: 12px;
+      padding: 18px 16px;
+      border: 1.5px solid;
+    }
+    .r-hot  { background: #f0fdf7; border-color: #00c875; }
+    .r-warm { background: #fffbf0; border-color: #f5a623; }
+    .r-cold { background: #f7f8fa; border-color: #c1c9d8; }
+    .r-badge {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 20px;
+      display: inline-block; margin-bottom: 9px;
+    }
+    .rb-hot  { background: #00c875; color: #fff; }
+    .rb-warm { background: #f5a623; color: #fff; }
+    .rb-cold { background: #8a93a8; color: #fff; }
+    .r-title {
+      font-size: 13px; font-weight: 700;
+      color: #0f1c36; margin-bottom: 5px;
+    }
+    .r-criteria {
+      font-size: 11.5px; color: #5a6478;
+      margin-bottom: 10px; line-height: 1.65;
+    }
+    .r-action {
+      font-size: 12px; font-weight: 600;
+      padding: 8px 10px; border-radius: 8px;
+      text-align: center;
+    }
+    .ra-hot  { background: #00c875; color: #fff; }
+    .ra-warm { background: #f5a623; color: #fff; }
+    .ra-cold { background: #dde2ed; color: #5a6478; }
+
+    /* ── OUTCOME BAR ── */
+    .outcome-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      max-width: 1000px;
+      margin: 28px auto 0;
+    }
+    .outcome {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      border: 1.5px solid #e8ecf4;
+    }
+    .outcome .o-num {
+      font-size: 26px; font-weight: 800; margin-bottom: 4px;
+    }
+    .outcome .o-lbl {
+      font-size: 11.5px; color: #7a8396; line-height: 1.45;
+    }
+
+    /* ── TECH STACK ── */
+    .tech-section {
+      max-width: 1000px;
+      margin: 32px auto 0;
+    }
+    .tech-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      border: 1.5px solid #e4e8f3;
+    }
+    .tech-row {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px;
+    }
+    .tech-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: #f7f9fd;
+      border: 1px solid #dde3f0;
+      border-radius: 30px;
+      padding: 6px 13px;
+      font-size: 12px; font-weight: 600; color: #2a3555;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    .footnote {
+      text-align: center;
+      font-size: 11.5px; color: #9aa0b0;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 700px) {
+      .two-col, .track-header-row, .q-grid, .routes-row, .outcome-row { grid-template-columns: 1fr; }
+      .sdiv { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="logo-badge">Impactable Live Events</div>
+    <h1>Two-Track Registration & Lead Qualification Flow</h1>
+    <p>Every registrant routes through the same qualification survey — whether they came from an external campaign or directly from LinkedIn.</p>
+  </div>
+
+  <!-- STAT BAR -->
+  <div class="stat-bar">
+    <div class="stat-item"><div class="num">35%</div><div class="lbl">Avg. live attendance</div></div>
+    <div class="sdiv"></div>
+    <div class="stat-item"><div class="num">100%</div><div class="lbl">See the thank you page</div></div>
+    <div class="sdiv"></div>
+    <div class="stat-item"><div class="num">80–90%</div><div class="lbl">Survey completion</div></div>
+    <div class="sdiv"></div>
+    <div class="stat-item"><div class="num">5–10×</div><div class="lbl">Lift in qualified leads</div></div>
+  </div>
+
+  <!-- TRACK HEADER LABELS -->
+  <div class="track-header-row">
+    <div class="track-label track-a">
+      <span class="track-tag tag-a">Track A</span>
+      External Traffic — Controlled Flow
+    </div>
+    <div class="track-label track-b">
+      <span class="track-tag tag-b">Track B</span>
+      LinkedIn-Native — Justin's Organic Audience
+    </div>
+  </div>
+
+  <!-- TWO COLUMN FLOW -->
+  <div class="two-col">
+
+    <!-- TRACK A -->
+    <div class="col">
+
+      <div class="step blue">
+        <div class="step-num num-a">A1 — Entry Point</div>
+        <div class="step-head">
+          <div class="step-icon ic-blue">📣</div>
+          <div>
+            <div class="step-title">External Traffic Source</div>
+            <div class="step-desc">Website banner, paid LinkedIn ads, email campaigns, or partner promotions drive clicks to a <strong>dedicated Impactable landing page</strong> — not LinkedIn's native event page.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+      <div class="step blue">
+        <div class="step-num num-a">A2 — Registration</div>
+        <div class="step-head">
+          <div class="step-icon ic-blue">📝</div>
+          <div>
+            <div class="step-title">Custom Landing Page</div>
+            <div class="step-desc">Clean registration form: <strong>First name · Email · Company.</strong> On submit, pass these as URL parameters to the thank you page so the survey pre-fills — no re-entry required.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+      <div class="step blue">
+        <div class="step-num num-a">A3 — Thank You Page</div>
+        <div class="step-head">
+          <div class="step-icon ic-blue">✅</div>
+          <div>
+            <div class="step-title">Survey Embedded on Thank You Page</div>
+            <div class="step-desc">Instead of "check your email," the page shows: <em>"You're registered! Quick question while we send your confirmation..."</em> and drops straight into the 4-question survey below.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TRACK B -->
+    <div class="col">
+
+      <div class="step green">
+        <div class="step-num num-b">B1 — Entry Point</div>
+        <div class="step-head">
+          <div class="step-icon ic-green">💼</div>
+          <div>
+            <div class="step-title">LinkedIn Organic — Justin's Audience</div>
+            <div class="step-desc">Justin posts about the live event. His followers see it in feed, click <strong>"Attend"</strong> directly on LinkedIn. LinkedIn handles registration natively — no redirect possible.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+      <div class="step green">
+        <div class="step-num num-b">B2 — During the Live</div>
+        <div class="step-head">
+          <div class="step-icon ic-green">🔴</div>
+          <div>
+            <div class="step-title">In-Stream Survey Interception</div>
+            <div class="step-desc">Three interception moments during the LinkedIn Live stream:</div>
+          </div>
+        </div>
+        <div class="tactics">
+          <div class="tactic">
+            <div class="t-icon">📌</div>
+            <div class="t-text"><strong>Pinned comment:</strong> Drop the survey link as a pinned comment the moment the stream starts. Keep it visible the entire session.</div>
+          </div>
+          <div class="tactic">
+            <div class="t-icon">🎤</div>
+            <div class="t-text"><strong>Verbal CTA (3×):</strong> Justin mentions it at the open, midpoint, and close — <em>"Comment 'AUDIT' and I'll send you a free LinkedIn Ads audit."</em></div>
+          </div>
+          <div class="tactic">
+            <div class="t-icon">🤖</div>
+            <div class="t-text"><strong>ManyChat keyword DM:</strong> Anyone who comments "AUDIT" automatically receives a DM with the survey link. 0 manual effort, instant delivery.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+      <div class="step green">
+        <div class="step-num num-b">B3 — Post-Event (within 1 hr)</div>
+        <div class="step-head">
+          <div class="step-icon ic-green">📲</div>
+          <div>
+            <div class="step-title">Follow-Up Post + Replay</div>
+            <div class="step-desc">Justin posts a recap immediately after. Catches replay viewers and anyone who missed the pinned comment. Includes the survey link with a clear audit CTA. Also repurposable as content.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MERGE BANNER -->
+  <div class="merge-banner" style="margin-top: 20px;">
+    <div class="merge-icon">🔀</div>
+    <div class="merge-text">
+      <div class="merge-title">Both tracks converge here — same survey, same routing logic</div>
+      <div class="merge-sub">Track A gets the survey on the thank you page. Track B gets the survey link via pinned comment, ManyChat DM, or post-event post. From this point, the experience is identical.</div>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div style="max-width:1000px; margin: 0 auto;">
+    <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+  </div>
+
+  <!-- SURVEY SECTION -->
+  <div class="survey-section">
+    <div class="survey-card">
+      <div class="survey-badge">Lead Qualification Survey — 4 Questions</div>
+      <div class="survey-head">
+        <div class="step-icon ic-purple" style="width:42px;height:42px;border-radius:11px;font-size:20px;">📋</div>
+        <div>
+          <div class="step-title" style="font-size:15px;">Impactable Qualification Survey</div>
+          <div class="step-desc">~60 seconds to complete. Budget question comes first to capture the most important signal even on partial completion. Non-completers still receive their webinar confirmation — zero drop-off risk.</div>
+        </div>
+      </div>
+
+      <div class="q-grid">
+
+        <div class="q-item">
+          <div class="q-num">Q1 — Primary Qualifier</div>
+          <div class="q-text">What's your current (or planned) monthly LinkedIn Ads budget?</div>
+          <div class="q-opts">
+            ○ Under $1,000/mo<br>
+            ○ $1,000 – $5,000/mo<br>
+            ○ <span class="hot">$5,000 – $20,000/mo ✦</span><br>
+            ○ <span class="hot">$20,000+/mo ✦</span>
+          </div>
+          <span class="q-tag tq">Qualify</span>
+        </div>
+
+        <div class="q-item">
+          <div class="q-num">Q2 — Role</div>
+          <div class="q-text">What best describes your role?</div>
+          <div class="q-opts">
+            ○ <span class="hot">Founder / Owner ✦</span><br>
+            ○ <span class="hot">Marketing / Demand Gen ✦</span><br>
+            ○ Sales / Revenue<br>
+            ○ Agency / Freelancer<br>
+            ○ Other
+          </div>
+          <span class="q-tag ts">Segment</span>
+        </div>
+
+        <div class="q-item">
+          <div class="q-num">Q3 — Current State</div>
+          <div class="q-text">Where are you with LinkedIn Ads right now?</div>
+          <div class="q-opts">
+            ○ <span class="hot">Running ads in-house ✦</span><br>
+            ○ <span class="hot">Running with an agency ✦</span><br>
+            ○ Tried, currently paused<br>
+            ○ Haven't started yet
+          </div>
+          <span class="q-tag ti">Intent</span>
+        </div>
+
+        <div class="q-item" style="border-color:#f5c842; background:#fffdf3;">
+          <div class="q-num">Q4 — CTA</div>
+          <div class="q-text">Want a free LinkedIn Ads audit from the Impactable team?</div>
+          <div class="q-opts">
+            ○ <span class="hot">Yes — show me how ✦</span><br>
+            ○ Not right now
+          </div>
+          <span class="q-tag tc">CTA</span>
+        </div>
+
+      </div>
+      <p style="font-size:11.5px; color:#9aa0b0; margin-top:14px;">✦ = hot/warm lead signal &nbsp;|&nbsp; Budget question captured first so partial completions still qualify</p>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div style="max-width:1000px; margin: 0 auto;">
+    <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+  </div>
+
+  <!-- ROUTING -->
+  <div class="routing-section">
+    <div class="section-label">Automated Lead Routing — Survey responses trigger this instantly</div>
+    <div class="routes-row">
+
+      <div class="route r-hot">
+        <span class="r-badge rb-hot">🔥 Hot Lead</span>
+        <div class="r-title">High-intent, in-ICP</div>
+        <div class="r-criteria">
+          Budget ≥ $5K/mo<br>
+          + Founder or Marketing role<br>
+          + Actively running LinkedIn Ads<br>
+          + Opts in for audit
+        </div>
+        <div class="r-action ra-hot">→ Free audit booking link shown immediately</div>
+      </div>
+
+      <div class="route r-warm">
+        <span class="r-badge rb-warm">🌡 Warm Lead</span>
+        <div class="r-title">Mid-funnel — educate first</div>
+        <div class="r-criteria">
+          Budget $1K–$5K/mo<br>
+          OR paused / not started yet<br>
+          OR declined audit CTA
+        </div>
+        <div class="r-action ra-warm">→ Free resource + nurture sequence</div>
+      </div>
+
+      <div class="route r-cold">
+        <span class="r-badge rb-cold">❄️ Cold Lead</span>
+        <div class="r-title">Content-interested only</div>
+        <div class="r-criteria">
+          Budget under $1K/mo<br>
+          OR agency / freelancer<br>
+          OR no current ads intent
+        </div>
+        <div class="r-action ra-cold">→ Webinar confirmation only</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OUTCOMES -->
+  <div class="outcome-row">
+    <div class="outcome">
+      <div class="o-num" style="color:#0a66c2;">1–2%</div>
+      <div class="o-lbl">Current meeting conversion from webinar registrants (industry baseline)</div>
+    </div>
+    <div class="outcome" style="border-color:#00c875;">
+      <div class="o-num" style="color:#00c875;">~10%</div>
+      <div class="o-lbl">Target meeting conversion with two-step survey flow (Logan Lyles' validated result)</div>
+    </div>
+    <div class="outcome" style="border-color:#0a66c2;">
+      <div class="o-num" style="color:#0a66c2;">5–10×</div>
+      <div class="o-lbl">Lift in qualified audit bookings per event — no extra ad spend required</div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="tech-section">
+    <div class="section-label">Suggested Tech Stack</div>
+    <div class="tech-card">
+      <div class="step-head">
+        <div class="step-icon ic-blue" style="width:40px;height:40px;border-radius:10px;">⚙️</div>
+        <div>
+          <div class="step-title">Tools to Wire This Up</div>
+          <div class="step-desc">Pass registrant data via URL parameters (name + email) from confirmation → survey so contacts are created automatically, no re-entry required. ManyChat handles Track B DM automation natively on LinkedIn.</div>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-pill"><span class="dot" style="background:#0a66c2;"></span>LinkedIn Live</div>
+        <div class="tech-pill"><span class="dot" style="background:#7b2fbe;"></span>Typeform / Tally (survey)</div>
+        <div class="tech-pill"><span class="dot" style="background:#00c875;"></span>HubSpot (CRM + routing)</div>
+        <div class="tech-pill"><span class="dot" style="background:#f5a623;"></span>Calendly (audit booking)</div>
+        <div class="tech-pill"><span class="dot" style="background:#e44c4c;"></span>Make / Zapier (automation)</div>
+        <div class="tech-pill"><span class="dot" style="background:#00a86b;"></span>ManyChat (Track B DMs)</div>
+      </div>
+      <p style="font-size:11.5px; color:#9aa0b0; margin-top:12px;">
+        Alternative: HighLevel handles survey + CRM + booking + automations in one platform (~$97–$297/mo). Logan Lyles offers a pre-built snapshot.
+      </p>
+    </div>
+  </div>
+
+  <div class="footnote" style="margin-top:36px;">
+    Impactable Live Events · Two-Track Registration Flow · Based on Logan Lyles / DemandShift Webinar Fast Track methodology
+  </div>
+
+</body>
+</html>
